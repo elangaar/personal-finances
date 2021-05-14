@@ -3,7 +3,7 @@ CREATE TABLE budgets (
     amount           NUMBER(19, 4) NOT NULL,
     b_date           DATE NOT NULL,
     comments         VARCHAR2(255),
-    b_cat       INTEGER NOT NULL
+    b_cat            INTEGER NOT NULL
 );
 
 CREATE TABLE budget_categories (
