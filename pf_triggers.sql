@@ -26,7 +26,7 @@ begin
     where acc_id = :old.account;
   end if;
 end;
-
+/
 -- trigger that changes budget when expense changes
 create or replace trigger aiud_change_exp_change_budget
 after insert or update or delete on expenses
@@ -60,4 +60,4 @@ begin
       update set budgets.amount = budgets.amount + (:old.amount - :new.amount);
   end if;
 end;
-
+/
