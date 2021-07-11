@@ -1,34 +1,39 @@
 -- trigger that changes amount account balance when income changes
 
-create or replace trigger aiud_change_inc_acc_balance
-after insert or update or delete on incomes
-for each row
-begin
-  if inserting then
-    insert into account_balances (acc_bal_date, amount, account)
-    values (:new.inc_date, :new.amount, :new.amount);
-  elsif updating then
-    if :new.account = :old.account and :new.inc_date = :old.inc_date then
-      update account_balances
-      set amount = amount - (:old.amount - :new.amount)
-      where account = :new.account
-      and acc_bal_date = :new.inc_date;
-    elsif :new.account != :old.account and :new.inc_date = :old.inc_date then
-      update account_balances
-      set amount = amount - :new.amount
-      where account = :old.account
-      and acc_bal_date = :new.inc_date;
-      if --
-      update account_balances
-      set amount = amount + :new.amount
-      where account = :new.account;
-    end if;
-  else
-    update account_balances
-    set amount = amount - :old.amount
-    where account = :old.account;
-  end if;
-end;
+CREATE OR REPLACE TRIGGER aiud_change_inc_change_account_state
+AFTER INSERT OR UPDATE OR DELETE ON incomes
+FOR EACH ROW
+BEGIN
+  IF inserting THEN
+    UPDATE accounts
+    SET current_state = current_state + :new.amount
+    WHERE acc_id = :new.account;
+  ELSIF updating THEN
+    IF :new.account != :old.account AND :new.amount != :old.amount THEN
+      UPDATE accounts
+      SET current_state = current_state - :old.amount
+      WHERE acc_id = :old.account;
+      UPDATE accounts
+      SET current_state = current_state + :new.amount
+      WHERE acc_id = :new.account;
+    ELSIF :new.amount != :old.amount THEN
+      UPDATE accounts
+      SET current_state = current_state - :old.amount + :new.amount
+      WHERE acc_id = :new.account;
+    ELSIF :new.account != :old.account THEN
+      UPDATE accounts
+      SET current_state = current_state - :old.amount
+      WHERE acc_id = :old.account;
+      UPDATE accounts
+      SET current_state = current_state + :old.amount
+      WHERE acc_id = :new.account;
+    END IF;
+  ELSE
+    UPDATE accounts
+    SET current_state = current_state - :old.amount
+    WHERE acc_id = :old.account;
+  END IF;
+END;
 /
 
 -- trigger that changes budget when expense changes
