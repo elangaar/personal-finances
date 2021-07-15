@@ -50,7 +50,7 @@ begin
       from
         expense_categories ec
       where
-        ec.exp_cat_id = :new.exp_cat
+        ec.exp_cat_id = :new.expense_category
     )
     on (budgets.b_id = ec_b) -- ...which will be used here
     when matched then
@@ -63,7 +63,7 @@ begin
       from
         expense_categories ec
       where
-        ec.exp_cat_id = :new.exp_cat
+        ec.exp_cat_id = :new.expense_category
     )
     on (budgets.b_id = ec_b) -- ...which will be used here
     when matched then
@@ -115,3 +115,12 @@ begin
   END IF;
 END;
 /
+
+CREATE OR REPLACE TRIGGER aiu_set_last_change
+BEFORE INSERT OR UPDATE ON accounts
+FOR EACH ROW
+BEGIN
+  :NEW.last_change := SYSDATE;
+END;
+/
+
