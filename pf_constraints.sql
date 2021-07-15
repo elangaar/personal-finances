@@ -33,3 +33,8 @@ ALTER TABLE incomes
   ADD CONSTRAINT acc_inc_fk FOREIGN KEY ( account )
     REFERENCES accounts ( acc_id )
     ON DELETE CASCADE;
+
+ALTER TABLE accounts
+  ADD CONSTRAINT curr_acc_fk FOREIGN KEY ( currency )
+    REFERENCES currency ( curr_id )
+    ON DELETE CASCADE;
