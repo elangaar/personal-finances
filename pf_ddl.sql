@@ -1,4 +1,5 @@
 PROMPT Creating tables, constraints, views and triggers for Personal Finances
+PROMPT ----------------------------------------------------------------------
 
 @@pf_tables.sql
 

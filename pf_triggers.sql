@@ -83,35 +83,35 @@ begin
 end;
 /
 
-create or replace trigger biu_acc_balances_date
-before insert or update on account_balances
-for each row
-begin
-  if (:new.acc_bal_date > SYSDATE) THEN
-    RAISE_APPLICATION_ERROR (-20002,
-      'Invalid date. Account balance date must be <= ' || SYSDATE );
-  END IF;
-end;
-/
-
-create or replace trigger biu_incomes_date
-before insert or update on incomes
-for each row
-begin
-  if (:new.inc_date > SYSDATE) THEN
+CREATE OR REPLACE TRIGGER biu_incomes_date
+BEFORE INSERT OR UPDATE ON incomes
+FOR EACH ROW
+BEGIN
+  IF (:NEW.inc_date > SYSDATE) THEN
     RAISE_APPLICATION_ERROR (-20003,
       'Invalid date. Income date must be <= ' || SYSDATE );
   END IF;
-end;
+END;
 /
 
-create or replace trigger biu_accounts_opened
-before insert or update on accounts
-for each row
-begin
-  if (:new.opened > SYSDATE) then
-    RAISE_APPLICATION_ERROR (-20003,
+CREATE OR REPLACE TRIGGER biu_accounts_opened
+BEFORE INSERT OR UPDATE ON accounts
+FOR EACH ROW
+BEGIN
+  IF (:NEW.opened > SYSDATE) THEN
+    RAISE_APPLICATION_ERROR (-20004,
       'Invalid date. Opened date must be <= ' || SYSDATE );
+  END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER biu_accounts_closed
+BEFORE INSERT OR UPDATE ON accounts
+FOR EACH ROW
+BEGIN
+  IF (:NEW.closed > SYSDATE) THEN
+    RAISE_APPLICATION_ERROR (-20005,
+      'Invalid date. Closed date must be <= ' || SYSDATE );
   END IF;
 END;
 /
@@ -123,4 +123,3 @@ BEGIN
   :NEW.last_change := SYSDATE;
 END;
 /
-
